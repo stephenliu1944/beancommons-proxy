@@ -5,11 +5,11 @@
  */ 
 function clipPath(path = '') {
     return path.replace(/(^http[s]?:\/\/)/, '')
-        .replace(/(\/)?$/, '')
-        .replace(':', '_');
+               .replace(/(\/.*)$/, '')
+               .replace(':', '_');
 }
-// 根据 prefix + domain 动态设置url路径
-export function dynamicPath(options) {
+// 根据 prefix + host 动态设置url路径
+export function hostPath(options) {
     var { baseURL } = options;
 
     if (isBlank(baseURL)) {
@@ -20,22 +20,33 @@ export function dynamicPath(options) {
 
     return `/proxy/${domain}`;
 }
-// 根据 prefix + domain 动态匹配代理服务
-export function createDynamicProxy(servers = [], prefix = 'proxy') {
+// 根据 prefix + host 动态匹配代理服务
+export function createProxy(servers, prefix = 'proxy') {
+    if (!servers) {
+        return;
+    }
+
     var config = {};
 
-    servers.forEach((server) => {
-        let match;
-        if (isString(server)) {
-            match = server;
-        } else if (isObject(server)) {
-            match = Object.keys(server)[0];
-        } else {
-            throw new Error('proxy options type error, only support string and object type');
+    function setConfig(match, target) {
+        var path = `/${prefix}/${clipPath(match)}`;
+        config[path] = target;
+    }
+
+    if (isString(servers)) {
+        setConfig(servers, servers);
+    } else if (isArray(servers) || isObject(servers)) {
+        for (let key in servers) {
+            if (servers.hasOwnProperty(key)) {
+                let target = servers[key];
+                // key is NaN means object otherwise array
+                let match = isNaN(key) ? key : target;
+                setConfig(match, target);
+            }
         }
-        let key = `/${prefix}/${clipPath(match)}`;
-        config[key] = server[match] || server;
-    });
+    } else {
+        throw new Error('proxy options type error, only support string, object or array type');
+    }
 
     return mixinProxy(config);
 }

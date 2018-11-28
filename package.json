@@ -1,25 +1,25 @@
 {
-  "name": "@beanutils/webpack-helper",
-  "version": "0.1.0",
-  "description": "common webpack config",
+  "name": "@beanutils/proxy",
+  "version": "0.1.0-alpha.1",
+  "description": "for development env proxy",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "browser": "dist/index.umd.js",
-  "libraryName": "webpackHelper",
+  "libraryName": "Proxy",
   "license": "MIT",
   "author": "Stephen Liu",
   "repository": {
     "type": "git",
-    "url": "https://github.com/stephenliu1944/beanutils-webpack-helper.git"
+    "url": "https://github.com/stephenliu1944/beanutils-proxy.git"
   },
-  "homepage": "https://github.com/stephenliu1944/beanutils-webpack-helper",
+  "homepage": "https://github.com/stephenliu1944/beanutils-proxy",
   "bugs": {
-    "url": "https://github.com/stephenliu1944/beanutils-webpack-helper/issues"
+    "url": "https://github.com/stephenliu1944/beanutils-proxy/issues"
   },
   "keywords": [
-    "webpack",
-    "config",
-    "proxy"
+    "proxy",
+    "http",
+    "mock"
   ],
   "files": [
     "dist",
@@ -30,14 +30,14 @@
     "build:dev": "cross-env NODE_ENV=development rollup -c rollup.config.dev.js",
     "build:prod": "cross-env NODE_ENV=production rollup -c rollup.config.prod.js",
     "start": "cross-env NODE_ENV=development rollup -c rollup.config.dev.js -w",
-    "watch:dist": "cross-env NODE_ENV=production rollup -w -c rollup.config.prod.js",
     "test": "jest",
     "lint": "eslint -c .eslintrc.json --fix --ext .js src/",
     "package": "cross-env BUILD_PATH=dist npm run build:prod",
-    "publish:prerelease": "npm run package && gulp version-prerelease && npm publish",
-    "publish:patch": "npm run package && gulp version-patch && npm publish",
-    "publish:minor": "npm run package && gulp version-minor && npm publish",
-    "publish:major": "npm run package && gulp version-major && npm publish",
+    "package:watch": "cross-env BUILD_PATH=dist NODE_ENV=production rollup -w -c rollup.config.prod.js",
+    "publish:prerelease": "npm run package && gulp version-prerelease && npm publish --access=public && npm run git:push",
+    "publish:patch": "npm run package && gulp version-patch && npm publish --access=public && npm run git:push",
+    "publish:minor": "npm run package && gulp version-minor && npm publish --access=public && npm run git:push",
+    "publish:major": "npm run package && gulp version-major && npm publish --access=public && npm run git:push",
     "unpublish": "npm unpublish -f",
     "git:push": "gulp git-push"
   },

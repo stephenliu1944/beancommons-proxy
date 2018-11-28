@@ -1,4 +1,5 @@
-import * as Define from './define';
-import * as Proxy from './proxy';
+import * as Define from './proxy';
+import * as Proxy from './define';
 
-export { Define, Proxy }
+export { Define };
+export default Proxy;

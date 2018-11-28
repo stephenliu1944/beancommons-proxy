@@ -7,22 +7,6 @@ npm install --save @beanutils/proxy
 ```
 
 ## Usage
-app.js   
-```
-// use @beanutils/http-request lib
-import HttpRequest from '@beanutils/http-request';
-import Proxy from '@beanutils/proxy';
-HttpRequest({
-    baseURL: 'http://api1.xxxx.com',
-    url: 'xxx',
-    proxyPath: Proxy.hostPath
-    ...
-}).then((data) => {
-
-}, (error) => {
-
-});
-```
 package.json
 ```
 ...
@@ -48,7 +32,7 @@ package.json
 }
 ...
 ```
-webpack.config.dev.js
+webpack.config.dev.js  
 ```
 import Proxy from '@beanutils/proxy';
 import pkg from './package.json';
@@ -58,9 +42,25 @@ const { local, proxy } = pkg.devServer;
     devServer: {
         host: '0.0.0.0',
         port: local,
-        ....
         proxy: Proxy.createProxy(proxy)
+        ....
     }
     ...
 }
+```
+app.js(optional)   
+```
+// use @beanutils/http-request http lib
+import HttpRequest from '@beanutils/http-request';
+import Proxy from '@beanutils/proxy';
+HttpRequest({
+    baseURL: 'http://api1.xxxx.com',
+    url: 'xxx',
+    proxyPath: Proxy.hostPath
+    ...
+}).then((data) => {
+
+}, (error) => {
+
+});
 ```

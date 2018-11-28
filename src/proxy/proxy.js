@@ -1,3 +1,5 @@
+import { isBlank, isArray, isString, isObject } from '@beanutils/common';
+
 /**
  * 修剪路径匹配
  * http://localhost:3001 > localhost_3001

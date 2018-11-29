@@ -91,7 +91,7 @@ axios({
  * @param {string} prefix match path prefix, default is 'proxy'.
  * @return {object}
  */
-Proxy.configProxy(services, prefix = 'proxy')
+configProxy(services, prefix = 'proxy')
 
 /**
  * @desc get a matching proxy path with prefix.
@@ -99,5 +99,5 @@ Proxy.configProxy(services, prefix = 'proxy')
  * @param {string} prefix match path prefix, default is 'proxy'.
  * @return {string}
  */
-Proxy.proxyPath(baseURL, prefix = 'proxy')
+proxyPath(baseURL, prefix = 'proxy')
 ```

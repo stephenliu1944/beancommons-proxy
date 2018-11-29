@@ -7,8 +7,8 @@ import { isBlank, isArray, isString, isObject } from '@beanutils/common';
  */ 
 function clipPath(path = '') {
     return path.replace(/(^http[s]?:\/\/)/, '')
-               .replace(/(\/)$/, '')
-               .replace(':', '_');
+        .replace(/(\/)$/, '')
+        .replace(':', '_');
 }
 // 根据 prefix + host 动态设置url路径
 export function proxyPath(options, prefix = 'proxy') {

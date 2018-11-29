@@ -46,7 +46,11 @@ export default function(fileName) {
             resolve({
                 // browser: NODE_ENV === 'development'       // 读取第三方插件package.json的browser配置的入口文件, (针对浏览器插件使用).
             }),
-            commonjs(), // so Rollup can convert `ms` to an ES module
+            commonjs(isDEV && {
+                namedExports: {
+                    'node_modules/@beanutils/common/dist/index.umd.js': ['isString', 'isArray', 'isObject', 'isBlank', 'isFormData', 'isIE', 'isEmpty', 'isNotEmpty', 'isNotBlank', 'isFunction' ]
+                }
+            }),     // so Rollup can convert `ms` to an ES module
             eslint({
                 fix: true,
                 throwOnError: true,

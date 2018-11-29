@@ -34,7 +34,7 @@ package.json
 ```
 webpack.config.dev.js  
 ```
-import Proxy from '@beanutils/proxy';
+import { configProxy } from '@beanutils/proxy';
 import pkg from './package.json';
 const { local, proxy } = pkg.devServer;
 
@@ -42,25 +42,62 @@ const { local, proxy } = pkg.devServer;
     devServer: {
         host: '0.0.0.0',
         port: local,
-        proxy: Proxy.createProxy(proxy)
+        proxy: configProxy(proxy)
         ....
     }
     ...
 }
 ```
-app.js(optional)   
+app.js   
 ```
-// use @beanutils/http-request http lib
+import { proxyPath } from '@beanutils/proxy';
+
+/**
+ * use @beanutils/http-request (optional)
+ */ 
 import HttpRequest from '@beanutils/http-request';
-import Proxy from '@beanutils/proxy';
 HttpRequest({
     baseURL: 'http://api1.xxxx.com',
     url: 'xxx',
-    proxyPath: Proxy.hostPath
+    proxyPath: proxyPath
     ...
 }).then((data) => {
 
 }, (error) => {
 
 });
+
+/**
+ * use axios (optional)
+ */
+import axios from 'axios';
+var baseURL = 'http://api1.xxxx.com';
+axios({
+    baseURL: baseURL,
+    url: `${proxyPath(baseURL)}/api/xxxx`,
+    ...
+}).then((data) => {
+
+}, (error) => {
+
+});
+```
+
+## API
+```
+/**
+ * @desc create options of http-proxy-middleware
+ * @param {string | array | object} services proxy config.
+ * @param {string} prefix match path prefix, default is 'proxy'.
+ * @return {object}
+ */
+Proxy.configProxy(services, prefix = 'proxy')
+
+/**
+ * @desc get a matching proxy path with prefix.
+ * @param {string} baseURL url with host.
+ * @param {string} prefix match path prefix, default is 'proxy'.
+ * @return {string}
+ */
+Proxy.proxyPath(baseURL, prefix = 'proxy')
 ```

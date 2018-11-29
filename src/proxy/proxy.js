@@ -7,43 +7,38 @@ import { isBlank, isArray, isString, isObject } from '@beanutils/common';
  */ 
 function clipPath(path = '') {
     return path.replace(/(^http[s]?:\/\/)/, '')
-        .replace(/(\/.*)$/, '')
-        .replace(':', '_');
+               .replace(/(\/)$/, '')
+               .replace(':', '_');
 }
 // 根据 prefix + host 动态设置url路径
-export function hostPath(options) {
-    var { baseURL } = options;
+export function proxyPath(options, prefix = 'proxy') {
+    var baseURL = options?.baseURL || options;
 
     if (isBlank(baseURL)) {
         return '';
     }
 
-    let domain = clipPath(baseURL);
+    let host = clipPath(baseURL);
 
-    return `/proxy/${domain}`;
+    return `/${prefix}/${host}`;
 }
 // 根据 prefix + host 动态匹配代理服务
-export function createProxy(servers, prefix = 'proxy') {
-    if (!servers) {
+export function configProxy(services, prefix = 'proxy') {
+    if (!services) {
         return;
     }
 
     var config = {};
 
-    function setConfig(match, target) {
-        var path = `/${prefix}/${clipPath(match)}`;
-        config[path] = target;
-    }
-
-    if (isString(servers)) {
-        setConfig(servers, servers);
-    } else if (isArray(servers) || isObject(servers)) {
-        for (let key in servers) {
-            if (servers.hasOwnProperty(key)) {
-                let target = servers[key];
+    if (isString(services)) {
+        config[proxyPath(services, prefix)] = services;
+    } else if (isArray(services) || isObject(services)) {
+        for (let key in services) {
+            if (services.hasOwnProperty(key)) {
+                let target = services[key];
                 // key is NaN means object otherwise array
                 let match = isNaN(key) ? key : target;
-                setConfig(match, target);
+                config[proxyPath(match, prefix)] = target;
             }
         }
     } else {

@@ -1,6 +1,6 @@
 {
   "name": "@beanutils/proxy",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "For dev environment http proxy config.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",

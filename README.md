@@ -7,7 +7,7 @@ npm install --save @beanutils/proxy
 ```
 
 ## Usage
-Proxy suport three data types: string, array or object.
+Proxy support three data types: string, array or object.
 package.json
 ```js
 "dependencies": {

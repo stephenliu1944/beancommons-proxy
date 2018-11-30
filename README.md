@@ -1,5 +1,5 @@
 # @beanutils/proxy
-For dev environment http proxy config.
+Easy to config webpack devServer proxy or http-proxy-middleware options.
 
 ## Install
 ```
@@ -7,24 +7,40 @@ npm install --save @beanutils/proxy
 ```
 
 ## Usage
+Proxy suport three data types: string, array or object.
 package.json
-```
+```js
+"dependencies": {
 ...
-"devServer": {
+},
+"devDependencies": {
+...
+},
+// custom field, whatever you want
+"devServer": {          
     "local": 8080,
-    // proxy suport three data types, string, array or object.
-    "proxy": "http://api1.xxxx.com"
+    // proxy http://api1.xxxx.com to http://api1.xxxx.com
+    "proxy": "http://api1.xxxx.com"                           
      or
     "proxy": [
-        "http://api1.xxxx.com"      // api1
-        "http://api2.xxxx.com"      // api2
-        "http://api3.xxxx.com"      // api3
+        // proxy http://api1.xxxx.com to http://api1.xxxx.com
+        "http://api1.xxxx.com",                               
+        // proxy http://api2.xxxx.com to http://localhost:3002
+        { 
+            "http://api2.xxxx.com": "http://localhost:3002"   
+        },
+        // proxy http://api3.xxxx.com to http://localhost:3003 and more custom options
+        { 
+            "http://api3.xxx.com": {                          
+                target: "http://localhost:3003"
+                (http-proxy-middleware options)...
+            }
+        }
     ]
      or
     "proxy": {
-        "http://api1.xxx.com": "http://localhost:3001",     // mock
-        or
-        "http://api2.xxx.com": {
+        "http://api1.xxx.com": "http://localhost:3001",       
+        "http://api2.xxx.com": {                              
             target: "http://localhost:3002"
             (http-proxy-middleware options)...
         }
@@ -33,7 +49,7 @@ package.json
 ...
 ```
 webpack.config.dev.js  
-```
+```js
 import { configProxy } from '@beanutils/proxy';
 import pkg from './package.json';
 const { local, proxy } = pkg.devServer;
@@ -49,7 +65,7 @@ const { local, proxy } = pkg.devServer;
 }
 ```
 app.js   
-```
+```js
 import { proxyPath } from '@beanutils/proxy';
 
 /**
@@ -84,7 +100,7 @@ axios({
 ```
 
 ## API
-```
+```js
 /**
  * @desc create options of http-proxy-middleware
  * @param {string | array | object} services proxy config.

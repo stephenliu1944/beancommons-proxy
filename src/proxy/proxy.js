@@ -29,16 +29,28 @@ export function configProxy(services, prefix = 'proxy') {
     }
 
     var config = {};
-
+    
     if (isString(services)) {
         config[proxyPath(services, prefix)] = services;
-    } else if (isArray(services) || isObject(services)) {
+    } else if (isArray(services)) {
+        services.forEach((service) => {
+            let key, target;
+            if (isString(service)) {
+                key = service;
+                target = service;
+            } else if (isObject(service)) {
+                let entry = Object.entries(service)[0];
+                key = entry[0];
+                target = entry[1];
+            }
+            config[proxyPath(key, prefix)] = target;
+        });
+    } else if (isObject(services)) {
         for (let key in services) {
             if (services.hasOwnProperty(key)) {
-                let target = services[key];
                 // key is NaN means object otherwise array
-                let match = isNaN(key) ? key : target;
-                config[proxyPath(match, prefix)] = target;
+                // let match = isNaN(key) ? key : target;
+                config[proxyPath(key, prefix)] = services[key];
             }
         }
     } else {

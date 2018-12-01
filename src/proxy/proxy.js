@@ -23,7 +23,7 @@ export function proxyPath(options, prefix = 'proxy') {
     return `/${prefix}/${host}`;
 }
 // 根据 prefix + host 动态匹配代理服务
-export function proxy(services, prefix = 'proxy') {
+export function configProxy(services, prefix = 'proxy') {
     if (!services) {
         return;
     }

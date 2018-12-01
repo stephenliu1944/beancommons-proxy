@@ -50,7 +50,7 @@ package.json
 ```
 webpack.config.dev.js  
 ```js
-import { proxy } from '@beanutils/proxy';
+import { configProxy } from '@beanutils/proxy';
 import pkg from './package.json';
 const { local, proxy } = pkg.devServer;
 
@@ -58,7 +58,7 @@ const { local, proxy } = pkg.devServer;
     devServer: {
         host: '0.0.0.0',
         port: local,
-        proxy: proxy(proxy)
+        proxy: configProxy(proxy)
         ....
     }
     ...
@@ -107,7 +107,7 @@ axios({
  * @param {string} prefix match path prefix, default is 'proxy'.
  * @return {object}
  */
-proxy(services, prefix = 'proxy')
+configProxy(services, prefix = 'proxy')
 
 /**
  * @desc get a matching proxy path with prefix.

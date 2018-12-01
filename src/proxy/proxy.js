@@ -23,7 +23,7 @@ export function proxyPath(options, prefix = 'proxy') {
     return `/${prefix}/${host}`;
 }
 // 根据 prefix + host 动态匹配代理服务
-export function configProxy(services, prefix = 'proxy') {
+export function proxy(services, prefix = 'proxy') {
     if (!services) {
         return;
     }
@@ -48,8 +48,6 @@ export function configProxy(services, prefix = 'proxy') {
     } else if (isObject(services)) {
         for (let key in services) {
             if (services.hasOwnProperty(key)) {
-                // key is NaN means object otherwise array
-                // let match = isNaN(key) ? key : target;
                 config[proxyPath(key, prefix)] = services[key];
             }
         }

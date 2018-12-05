@@ -1,4 +1,4 @@
-import { isBlank, isArray, isString, isObject } from '@beanutils/common';
+import { isBlank, isArray, isString, isObject } from '@beancommons/utils';
 
 /**
  * 修剪路径匹配

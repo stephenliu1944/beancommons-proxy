@@ -30,7 +30,7 @@ export function rollupMerge(source1 = {}, source2 = {}) {
 export default function(fileName) {
     return {
         input: `src/${ isDEV ? 'dev' : 'index' }.js`,
-        external: !isDEV && ['@beanutils/common'],    // 打包时排除外部依赖包
+        external: !isDEV && ['@beancommons/utils'],    // 打包时排除外部依赖包
         plugins: [
             del({
                 targets: `${BUILD_PATH}/${ fileName || '*' }`
@@ -48,7 +48,7 @@ export default function(fileName) {
             }),
             commonjs(isDEV && {
                 namedExports: {
-                    'node_modules/@beanutils/common/dist/index.umd.js': ['isString', 'isArray', 'isObject', 'isBlank', 'isFormData', 'isIE', 'isEmpty', 'isNotEmpty', 'isNotBlank', 'isFunction' ]
+                    'node_modules/@beancommons/utils/dist/index.umd.js': ['isString', 'isArray', 'isObject', 'isBlank', 'isFormData', 'isIE', 'isEmpty', 'isNotEmpty', 'isNotBlank', 'isFunction' ]
                 }
             }),     // so Rollup can convert `ms` to an ES module
             eslint({

@@ -1,9 +1,9 @@
-# @beanutils/proxy
+# @beancommons/proxy
 Easy to config webpack devServer proxy or http-proxy-middleware options.
 
 ## Install
 ```
-npm install --save @beanutils/proxy
+npm install --save @beancommons/proxy
 ```
 
 ## Usage
@@ -50,7 +50,7 @@ package.json
 ```
 webpack.config.dev.js  
 ```js
-import { configProxy } from '@beanutils/proxy';
+import { configProxy } from '@beancommons/proxy';
 import pkg from './package.json';
 const { local, proxy } = pkg.devServer;
 
@@ -66,12 +66,12 @@ const { local, proxy } = pkg.devServer;
 ```
 app.js   
 ```js
-import { proxyPath } from '@beanutils/proxy';
+import { proxyPath } from '@beancommons/proxy';
 
 /**
- * use @beanutils/http-request (optional)
+ * use @beancommons/http (optional)
  */ 
-import HttpRequest from '@beanutils/http-request';
+import HttpRequest from '@beancommons/http';
 HttpRequest({
     baseURL: 'http://api1.xxxx.com',
     url: 'xxx',

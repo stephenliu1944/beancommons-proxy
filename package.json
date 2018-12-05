@@ -1,6 +1,6 @@
 {
-  "name": "@beanutils/proxy",
-  "version": "0.1.10",
+  "name": "@beancommons/proxy",
+  "version": "0.1.11",
   "description": "For dev environment http proxy config.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -10,11 +10,11 @@
   "author": "Stephen Liu",
   "repository": {
     "type": "git",
-    "url": "https://github.com/stephenliu1944/beanutils-proxy.git"
+    "url": "https://github.com/stephenliu1944/beancommons-proxy.git"
   },
-  "homepage": "https://github.com/stephenliu1944/beanutils-proxy",
+  "homepage": "https://github.com/stephenliu1944/beancommons-proxy",
   "bugs": {
-    "url": "https://github.com/stephenliu1944/beanutils-proxy/issues"
+    "url": "https://github.com/stephenliu1944/beancommons-proxy/issues"
   },
   "keywords": [
     "proxy",
@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@beanutils/common": "^0.1.11"
+    "@beancommons/utils": "^0.1.11"
   },
   "devDependencies": {
     "@babel/core": "^7.0.1",

@@ -6,5 +6,3 @@ import pkg from '../package.json';
 
 console.log(configProxy(pkg.devServer.proxy));
 
-
-

@@ -71,8 +71,8 @@ import { proxyPath } from '@beancommons/proxy';
 /**
  * use @beancommons/http (optional)
  */ 
-import HttpRequest from '@beancommons/http';
-HttpRequest({
+import http from '@beancommons/http';
+http({
     baseURL: 'http://api1.xxxx.com',
     url: 'xxx',
     proxyPath: proxyPath

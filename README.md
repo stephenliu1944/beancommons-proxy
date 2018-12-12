@@ -50,47 +50,32 @@ package.json
 ```
 webpack.config.dev.js  
 ```js
-import { configProxy } from '@beancommons/proxy';
+import { proxy } from '@beancommons/proxy';
 import pkg from './package.json';
-const { local, proxy } = pkg.devServer;
+
+const { local, proxy: proxyOpts } = pkg.devServer;
 
 {
     devServer: {
         host: '0.0.0.0',
         port: local,
-        proxy: configProxy(proxy)
-        ....
+        proxy: {
+            ...proxy(proxyOpts)
+        }        
     }
     ...
 }
 ```
 app.js   
 ```js
-import { proxyPath } from '@beancommons/proxy';
-
 /**
  * use @beancommons/http (optional)
  */ 
-import http from '@beancommons/http';
+import http, { proxyBaseURL } from '@beancommons/http';
 http({
     baseURL: 'http://api1.xxxx.com',
     url: 'xxx',
-    proxyPath: proxyPath
-    ...
-}).then((data) => {
-
-}, (error) => {
-
-});
-
-/**
- * use axios (optional)
- */
-import axios from 'axios';
-var baseURL = 'http://api1.xxxx.com';
-axios({
-    baseURL: baseURL,
-    url: `${proxyPath(baseURL)}/api/xxxx`,
+    proxyPath: proxyBaseURL
     ...
 }).then((data) => {
 
@@ -107,13 +92,5 @@ axios({
  * @param {string} prefix match path prefix, default is 'proxy'.
  * @return {object}
  */
-configProxy(services, prefix = 'proxy')
-
-/**
- * @desc get a matching proxy path with prefix.
- * @param {string} baseURL url with host.
- * @param {string} prefix match path prefix, default is 'proxy'.
- * @return {string}
- */
-proxyPath(baseURL, prefix = 'proxy')
+proxy(services, prefix = 'proxy')
 ```

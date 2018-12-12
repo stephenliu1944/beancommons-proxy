@@ -1,7 +1,7 @@
 import { isBlank, isArray, isString, isObject } from '@beancommons/utils';
 
 // 根据 prefix + baseURL 生成代理拦截的 url
-function proxyBaseURL(baseURL, prefix = 'proxy') {
+function proxyPath(baseURL, prefix = 'proxy') {
     if (isBlank(baseURL)) {
         return '';
     }
@@ -16,11 +16,6 @@ function proxyBaseURL(baseURL, prefix = 'proxy') {
                      .replace(':', '_');
 
     return `/${prefix}/${baseURL}`;
-}
-// 根据 prefix + host 动态设置url路径
-function proxyPath(options, prefix = 'proxy') {
-    var baseURL = options?.baseURL || options;
-    return proxyBaseURL(baseURL, prefix);
 }
 // 为代理配置默认值
 export function mixinProxy(options = {}) {

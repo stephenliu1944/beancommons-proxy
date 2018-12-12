@@ -12,8 +12,8 @@ function proxyPath(baseURL, prefix = 'proxy') {
      * http://ynreport.bbdservice.net/abc > ynreport.bbdservice.net/abc
      */ 
     baseURL = baseURL.replace(/(^http[s]?:\/\/)/, '')
-                     .replace(/(\/)$/, '')
-                     .replace(':', '_');
+        .replace(/(\/)$/, '')
+        .replace(':', '_');
 
     return `/${prefix}/${baseURL}`;
 }

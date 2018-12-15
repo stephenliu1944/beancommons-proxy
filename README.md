@@ -7,7 +7,7 @@ npm install --save @beancommons/proxy
 ```
 
 ## Usage
-Proxy support three data types: string, array or object.
+Proxy support three data types: String, Array or Object.
 package.json
 ```js
 "dependencies": {
@@ -17,30 +17,32 @@ package.json
 ...
 },
 // custom field, whatever you want
-"devServer": {          
-    "local": 8080,
-    // proxy http://api1.xxxx.com to http://api1.xxxx.com
-    "proxy": "http://api1.xxxx.com"                           
-     or
+"devServer": {              
+    // String
+    "proxy": "http://api1.xxxx.com"     // matching /proxy/api1.xxxx.com target http://api1.xxxx.com
+    // Array
     "proxy": [
-        // proxy http://api1.xxxx.com to http://api1.xxxx.com
-        "http://api1.xxxx.com",                               
-        // proxy http://api2.xxxx.com to http://localhost:3002
-        { 
+        // matching /proxy/api1.xxxx.com target http://api1.xxxx.com
+        "http://api1.xxxx.com", 
+        or                                       
+        {   // matching /proxy/api2.xxxx.com target http://localhost:3002
             "http://api2.xxxx.com": "http://localhost:3002"   
         },
-        // proxy http://api3.xxxx.com to http://localhost:3003 and more custom options
-        { 
+        or        
+        {   // matching /proxy/api3.xxxx.com target http://localhost:3003 and more custom options
             "http://api3.xxx.com": {                          
                 target: "http://localhost:3003"
                 (http-proxy-middleware options)...
             }
         }
     ]
-     or
+    // Object
     "proxy": {
-        "http://api1.xxx.com": "http://localhost:3001",       
-        "http://api2.xxx.com": {                              
+        // idem
+        "http://api1.xxx.com": "http://localhost:3001",  
+        or     
+        // idem
+        "http://api2.xxx.com": {
             target: "http://localhost:3002"
             (http-proxy-middleware options)...
         }
@@ -60,16 +62,16 @@ const { local, proxy: proxyOpts } = pkg.devServer;
         host: '0.0.0.0',
         port: local,
         proxy: {
-            ...proxy(proxyOpts)
+            ...proxy(proxyOpts)            
         }        
     }
     ...
 }
 ```
-app.js   
+app.js(optional)
 ```js
 /**
- * use @beancommons/http (optional)
+ * use @beancommons/http
  */ 
 import http, { proxyBaseURL } from '@beancommons/http';
 http({
@@ -90,7 +92,8 @@ http({
  * @desc create options of http-proxy-middleware
  * @param {string | array | object} services proxy config.
  * @param {string} prefix match path prefix, default is 'proxy'.
+ * @param {object} defaults default http-proxy-middleware options
  * @return {object}
  */
-proxy(services, prefix = 'proxy')
+proxy(services, prefix = 'proxy', defaults)
 ```

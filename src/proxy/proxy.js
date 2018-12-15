@@ -1,7 +1,7 @@
-import { isBlank, isArray, isString, isObject } from '@beancommons/utils';
+import { isBlank, isNotBlank, isArray, isString, isObject } from '@beancommons/utils';
 
-// 根据 prefix + baseURL 生成代理拦截的 url
-function proxyPath(baseURL, prefix = 'proxy') {
+// 根据 prefix + baseURL 生成匹配路径
+function proxyPath(baseURL, prefix) {
     if (isBlank(baseURL)) {
         return '';
     }
@@ -11,49 +11,27 @@ function proxyPath(baseURL, prefix = 'proxy') {
      * http://ynreport.bbdservice.net > ynreport.bbdservice.net
      * http://ynreport.bbdservice.net/abc > ynreport.bbdservice.net/abc
      */ 
-    baseURL = baseURL.replace(/(^http[s]?:\/\/)/, '')
+    var matchingPath = baseURL.replace(/(^http[s]?:\/\/)/, '')
         .replace(/(\/)$/, '')
         .replace(':', '_');
 
-    return `/${prefix}/${baseURL}`;
-}
-// 为代理配置默认值
-export function mixinProxy(options = {}) {
-    var config = {};
-
-    for (let key in options) {
-        if (options.hasOwnProperty(key)) {
-            let opt = options[key];
-            
-            config[key] = {
-                changeOrigin: true,
-                cookieDomainRewrite: '',
-                cookiePathRewrite: '/',
-                pathRewrite: (_path) => _path.replace(key, '')
-            };
-
-            if (isString(opt)) {
-                config[key].target = opt;
-            } else if (isObject(opt)) {
-                Object.assign(config[key], opt);
-            } else {
-                throw new Error('proxy options type error, only support string and object type');
-            }
-        }
+    if (isNotBlank(prefix)) {
+        matchingPath = `${prefix}/${matchingPath}`;
     }
 
-    return config;
+    return `/${matchingPath}`;
 }
-// 根据 prefix + host 动态匹配代理服务
-export function configProxy(services, prefix = 'proxy') {
+// 为服务设置匹配路径
+export function setPathMatching(services, prefix) {
     if (!services) {
         return;
     }
 
-    var config = {};
-    
+    var options = {};
+
+    // set matching paths
     if (isString(services)) {
-        config[proxyPath(services, prefix)] = services;
+        options[proxyPath(services, prefix)] = services;
     } else if (isArray(services)) {
         services.forEach((service) => {
             let key, target;
@@ -65,21 +43,50 @@ export function configProxy(services, prefix = 'proxy') {
                 key = entry[0];
                 target = entry[1];
             }
-            config[proxyPath(key, prefix)] = target;
+            options[proxyPath(key, prefix)] = target;
         });
     } else if (isObject(services)) {
         for (let key in services) {
             if (services.hasOwnProperty(key)) {
-                config[proxyPath(key, prefix)] = services[key];
+                options[proxyPath(key, prefix)] = services[key];
             }
         }
     } else {
         throw new Error('proxy options type error, only support string, object or array type');
     }
 
-    return mixinProxy(config);
+    return options;
 }
-// configProxy() 方法简写
-export function proxy(services, prefix) {
-    return configProxy(services, prefix);
+// 为匹配路径配置代理选项
+function setProxyOptions(options = {}, defaults = {}) {
+    var proxyOptions = {};
+
+    for (let key in options) {
+        if (options.hasOwnProperty(key)) {
+            let opt = options[key];
+
+            proxyOptions[key] = {
+                changeOrigin: true,
+                cookieDomainRewrite: '',
+                cookiePathRewrite: '/',
+                pathRewrite: (_path) => _path.replace(key, ''),
+                ...defaults
+            };
+
+            if (isString(opt)) {
+                proxyOptions[key].target = opt;
+            } else if (isObject(opt)) {
+                Object.assign(proxyOptions[key], opt);
+            } else {
+                throw new Error('proxy options type error, only support string and object type');
+            }
+        }
+    }
+
+    return proxyOptions;
+}
+
+export function proxy(services, prefix = 'proxy', defaults) {
+    var options = setPathMatching(services, prefix);
+    return setProxyOptions(options, defaults);
 }

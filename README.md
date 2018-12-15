@@ -7,7 +7,7 @@ npm install -D @beancommons/proxy
 ```
 
 ## Usage
-Proxy support three data types: String, Array or Object.
+Proxy support three data types: String, Array or Object.  
 package.json
 ```js
 "dependencies": {

@@ -3,7 +3,7 @@ Easy to config webpack devServer proxy or http-proxy-middleware options.
 
 ## Install
 ```
-npm install --save @beancommons/proxy
+npm install -D @beancommons/proxy
 ```
 
 ## Usage

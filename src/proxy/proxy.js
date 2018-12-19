@@ -22,7 +22,7 @@ function proxyPath(baseURL, prefix) {
     return `/${matchingPath}`;
 }
 // 为服务设置匹配路径
-export function setPathMatching(services, prefix) {
+function setPathsMatching(services, prefix) {
     if (!services) {
         return;
     }
@@ -66,6 +66,7 @@ function setProxyOptions(options = {}, defaults = {}) {
             let opt = options[key];
 
             proxyOptions[key] = {
+                logLevel: 'debug',
                 changeOrigin: true,
                 cookieDomainRewrite: '',
                 cookiePathRewrite: '/',
@@ -86,7 +87,8 @@ function setProxyOptions(options = {}, defaults = {}) {
     return proxyOptions;
 }
 
-export function proxy(services, prefix = 'proxy', defaults) {
-    var options = setPathMatching(services, prefix);
-    return setProxyOptions(options, defaults);
+export function proxy(services, prefix = 'proxy', defaultOpts) {
+    var matchings = setPathsMatching(services, prefix);
+    var options = setProxyOptions(matchings, defaultOpts);
+    return options;
 }

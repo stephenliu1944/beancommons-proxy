@@ -24,11 +24,11 @@ package.json
     "proxy": [
         // matching /proxy/api1.xxxx.com target http://api1.xxxx.com
         "http://api1.xxxx.com", 
-        or                                       
+        // or                                       
         {   // matching /proxy/api2.xxxx.com target http://localhost:3002
             "http://api2.xxxx.com": "http://localhost:3002"   
         },
-        or        
+        // or        
         {   // matching /proxy/api3.xxxx.com target http://localhost:3003 and more custom options
             "http://api3.xxx.com": {                          
                 target: "http://localhost:3003"
@@ -40,7 +40,7 @@ package.json
     "proxy": {
         // idem
         "http://api1.xxx.com": "http://localhost:3001",  
-        or     
+        // or     
         // idem
         "http://api2.xxx.com": {
             target: "http://localhost:3002"

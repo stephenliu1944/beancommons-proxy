@@ -7,13 +7,13 @@ function proxyPath(baseURL, prefix) {
     }
     /**
      * 修剪路径匹配
-     * http://localhost:3001 > localhost_3001
+     * http://localhost:3001 > localhost:3001
      * http://ynreport.bbdservice.net > ynreport.bbdservice.net
      * http://ynreport.bbdservice.net/abc > ynreport.bbdservice.net/abc
      */ 
     var matchingPath = baseURL.replace(/(^http[s]?:\/\/)/, '')
-        .replace(/(\/)$/, '')
-        .replace(':', '_');
+        .replace(/(\/)$/, '');
+        // .replace(':', '_');
 
     if (isNotBlank(prefix)) {
         matchingPath = `${prefix}/${matchingPath}`;

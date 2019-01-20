@@ -100,7 +100,7 @@ const { local, proxies } = pkg.devEnvironments;
         port: local,
         proxy: {
             ...proxy(proxies, {
-                prefix: '/api',     // prefix of proxy url, default is '/proxy'
+                prefix: 'api',     // prefix of proxy url, default is 'proxy'
                 secure: false       // http-proxy-middleware options
                 ...
             })

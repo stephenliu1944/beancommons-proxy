@@ -4,5 +4,8 @@
 import { proxy } from './index';
 import pkg from '../package.json';
 
-console.log(proxy(pkg.devServer.proxy));
+console.log(proxy(pkg.devServer.proxy, {
+    prefix: 'api',
+    secure: false
+}));
 

@@ -22,7 +22,7 @@ function proxyPath(baseURL, prefix) {
     return `/${matchingPath}`;
 }
 // 为服务设置匹配路径
-function setPathsMatching(services, prefix = '/proxy') {
+function setPathsMatching(services, prefix) {
     if (!services) {
         return;
     }
@@ -88,7 +88,7 @@ function setProxyOptions(options = {}, defaults = {}) {
 }
 
 export function proxy(services, defaultOpts = {}) {
-    var { prefix, ...other } = defaultOpts;
+    var { prefix = 'proxy', ...other } = defaultOpts;
     var matchings = setPathsMatching(services, prefix);
     var options = setProxyOptions(matchings, other);
     return options;

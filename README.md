@@ -17,11 +17,11 @@ package.json
 ...
 },
 // custom field, whatever you want
-"devServer": {              
+"devEnvironments": {              
     // String
-    "proxy": "http://api1.xxxx.com"     // matching /proxy/api1.xxxx.com target http://api1.xxxx.com
+    "proxies": "http://api1.xxxx.com"     // matching /proxy/api1.xxxx.com target http://api1.xxxx.com
     // Array
-    "proxy": [
+    "proxies": [
         // matching /proxy/api1.xxxx.com target http://api1.xxxx.com
         "http://api1.xxxx.com", 
         // or                                       
@@ -37,7 +37,7 @@ package.json
         }
     ]
     // Object
-    "proxy": {
+    "proxies": {
         // idem
         "http://api1.xxx.com": "http://localhost:3001",  
         // or     
@@ -55,15 +55,15 @@ webpack.config.dev.js
 import { proxy } from '@beancommons/proxy';
 import pkg from './package.json';
 
-const { local, proxy: proxyOpts } = pkg.devServer;
+const { local, proxies } = pkg.devEnvironments;
 
 {
     devServer: {
         host: '0.0.0.0',
         port: local,
         proxy: {
-            ...proxy(proxyOpts)            
-        }        
+            ...proxy(proxies)
+        }
     }
     ...
 }
@@ -73,11 +73,11 @@ app.js(optional)
 /**
  * use @beancommons/http
  */ 
-import http, { proxyBaseURL } from '@beancommons/http';
+import http, { proxyHost } from '@beancommons/http';
 http({
     baseURL: 'http://api1.xxxx.com',
     url: 'xxx',
-    proxyPath: proxyBaseURL
+    proxyURL: proxyHost
     ...
 }).then((data) => {
 
@@ -86,14 +86,37 @@ http({
 });
 ```
 
+## Options
+webpack.config.dev.js  
+```js
+import { proxy } from '@beancommons/proxy';
+import pkg from './package.json';
+
+const { local, proxies } = pkg.devEnvironments;
+
+{
+    devServer: {
+        host: '0.0.0.0',
+        port: local,
+        proxy: {
+            ...proxy(proxies, {
+                prefix: '/api',     // prefix of proxy url, default is '/proxy'
+                secure: false       // http-proxy-middleware options
+                ...
+            })
+        }
+    }
+    ...
+}
+```
+
 ## API
 ```js
 /**
  * @desc create options of http-proxy-middleware
  * @param {string | array | object} services proxy config.
- * @param {string} prefix match path prefix, default is 'proxy'.
  * @param {object} defaults default http-proxy-middleware options
  * @return {object}
  */
-proxy(services, prefix = 'proxy', defaults)
+proxy(services, defaults)
 ```

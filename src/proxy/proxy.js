@@ -87,8 +87,9 @@ function setProxyOptions(options = {}, defaults = {}) {
     return proxyOptions;
 }
 
-export function proxy(services, prefix = 'proxy', defaultOpts) {
+export function proxy(services, defaultOpts = {}) {
+    var { prefix, ...other } = defaultOpts;
     var matchings = setPathsMatching(services, prefix);
-    var options = setProxyOptions(matchings, defaultOpts);
+    var options = setProxyOptions(matchings, other);
     return options;
 }

@@ -22,7 +22,7 @@ function proxyPath(baseURL, prefix) {
     return `/${matchingPath}`;
 }
 // 为服务设置匹配路径
-function setPathsMatching(services, prefix) {
+function setPathsMatching(services, prefix = '/proxy') {
     if (!services) {
         return;
     }

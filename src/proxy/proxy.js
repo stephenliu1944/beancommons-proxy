@@ -7,13 +7,15 @@ function proxyPath(baseURL, prefix) {
     }
     /**
      * 修剪路径匹配
+     * /api/ > /api
      * http://localhost:3001 > localhost:3001
+     * http://192.168.1.1:3001 > 192.168.1.1:3001
      * http://ynreport.bbdservice.net > ynreport.bbdservice.net
      * http://ynreport.bbdservice.net/abc > ynreport.bbdservice.net/abc
      */ 
-    var matchingPath = baseURL.replace(/(^http[s]?:\/\/)/, '')
-        .replace(/(\/)$/, '');
-        // .replace(':', '_');
+    var matchingPath = baseURL.replace(/^(http[s]?:)?\/\//, '')     // 去掉 http[s]:// 部分
+        .replace(/^\//, '')                                         // 去掉开头的 /
+        .replace(/\/$/, '');                                        // 去掉末尾的 /
 
     if (isNotBlank(prefix)) {
         matchingPath = `${prefix}/${matchingPath}`;
@@ -32,25 +34,26 @@ function setPathsMatching(services, prefix) {
     // set matching paths
     if (isString(services)) {
         options[proxyPath(services, prefix)] = services;
-    } else if (isArray(services)) {
-        services.forEach((service) => {
-            let key, target;
-            if (isString(service)) {
-                key = service;
-                target = service;
-            } else if (isObject(service)) {
-                let entry = Object.entries(service)[0];
-                key = entry[0];
-                target = entry[1];
-            }
-            options[proxyPath(key, prefix)] = target;
-        });
     } else if (isObject(services)) {
         for (let key in services) {
             if (services.hasOwnProperty(key)) {
                 options[proxyPath(key, prefix)] = services[key];
             }
         }
+    } else if (isArray(services)) {
+        services.forEach((service) => {
+            Object.assign(options, setPathsMatching(service, prefix));
+            // let key, target;
+            // if (isString(service)) {
+            //     key = service;
+            //     target = service;
+            // } else if (isObject(service)) {
+            //     let entry = Object.entries(service)[0];
+            //     key = entry[0];
+            //     target = entry[1];
+            // }
+            // options[proxyPath(key, prefix)] = target;
+        });
     } else {
         throw new Error('proxy options type error, only support string, object or array type');
     }
@@ -99,7 +102,7 @@ export function onProxyRes(proxyRes, req, res) {
 }
 
 export function proxy(services, defaultOpts = {}) {
-    var { prefix = 'proxy', ...other } = defaultOpts;
+    var { prefix, ...other } = defaultOpts;
     var matchings = setPathsMatching(services, prefix);
     var options = setProxyOptions(matchings, other);
     return options;

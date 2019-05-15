@@ -8,7 +8,7 @@ npm install -D @beancommons/proxy
 
 ## Usage
 Proxy support three data types: String, Array or Object.  
-package.json
+### package.json
 ```js
 "dependencies": {
 ...
@@ -17,40 +17,40 @@ package.json
 ...
 },
 // custom field, whatever you want
-"devEnvironments": {              
+"devEnvironments": {
     // String
-    "proxies": "http://api1.xxxx.com"     // matching /proxy/api1.xxxx.com target http://api1.xxxx.com
-    // Array
-    "proxies": [
-        // matching /proxy/api1.xxxx.com target http://api1.xxxx.com
-        "http://api1.xxxx.com", 
-        // or                                       
-        {   // matching /proxy/api2.xxxx.com target http://localhost:3002
-            "http://api2.xxxx.com": "http://localhost:3002"   
-        },
-        // or        
-        {   // matching /proxy/api3.xxxx.com target http://localhost:3003 and more custom options
-            "http://api3.xxx.com": {                          
-                target: "http://localhost:3003"
-                (http-proxy-middleware options)...
-            }
-        }
-    ]
+    "proxies": "http://api.xxx.com"     // url matching /api.xxxx.com to target http://api.xxx.com
     // Object
     "proxies": {
-        // idem
-        "http://api1.xxx.com": "http://localhost:3001",  
-        // or     
-        // idem
-        "http://api2.xxx.com": {
+        "/api": "http://api.xxx.com",                       // url matching /api to target http://api.xxx.com
+        "http://api.xxx.com": "http://api.xxx.com",         // url matching /api.xxxx.com to target http://api.xxx.com
+        "http://api.xxx.com/api": "http://api.xxx.com",     // url matching /api.xxxx.com/api to target http://api.xxx.com
+        "http://192.168.1.1": "http://api.xxx.com",         // url matching /192.168.1.1 to target http://api.xxx.com
+        "http://192.168.1.1:8080": "http://api.xxx.com",    // url matching /192.168.1.1:8080 to target http://api.xxx.com
+        "http://api2.xxx.com": {                            // url matching /api2.xxx.com to target http://localhost:3002 and more custom options
             target: "http://localhost:3002"
             (http-proxy-middleware options)...
         }
     }
+    // Array
+    "proxies": [
+        "http://api1.xxxx.com", 
+        {   
+            "http://api2.xxxx.com": "http://192.168.1.1:3001",   
+            "http://api3.xxxx.com": "http://192.168.1.1:3002"   
+        }, {   
+            "http://api4.xxx.com": {                          
+                target: "http://192.168.1.1:3003"
+                (http-proxy-middleware options)...
+            }
+        }
+    ]
+
 }
 ...
 ```
-webpack.config.dev.js  
+
+### webpack.config.dev.js  
 ```js
 import { proxy } from '@beancommons/proxy';
 import pkg from './package.json';
@@ -61,53 +61,26 @@ const { local, proxies } = pkg.devEnvironments;
     devServer: {
         host: '0.0.0.0',
         port: local,
-        proxy: {
-            ...proxy(proxies)
-        }
+        proxy: proxy(proxies, {
+            prefix: 'api',     // prefix of proxy url, like matching /api/www.xxxx.com
+            secure: false      // http-proxy-middleware options
+            ...                // other http-proxy-middleware options
+        })
     }
     ...
 }
 ```
-app.js(optional)
+
+### app.js
+use @beancommons/http or other
 ```js
-/**
- * use @beancommons/http
- */ 
-import http, { proxyHost } from '@beancommons/http';
+import http, { helpers } from '@beancommons/http';
 http({
     baseURL: 'http://api1.xxxx.com',
     url: 'xxx',
-    proxyURL: proxyHost
+    proxyPath: helpers.proxyHost
     ...
-}).then((data) => {
-
-}, (error) => {
-
 });
-```
-
-## Options
-webpack.config.dev.js  
-```js
-import { proxy } from '@beancommons/proxy';
-import pkg from './package.json';
-
-const { local, proxies } = pkg.devEnvironments;
-
-{
-    devServer: {
-        host: '0.0.0.0',
-        port: local,
-        proxy: {
-            ...proxy(proxies, {
-                prefix: 'api',     // prefix of proxy url, default is 'proxy'
-                secure: false       // http-proxy-middleware options
-                ...
-            })
-        }
-    }
-    ...
-}
 ```
 
 ## API
@@ -115,7 +88,7 @@ const { local, proxies } = pkg.devEnvironments;
 /**
  * @desc create options of http-proxy-middleware
  * @param {string | array | object} services proxy config.
- * @param {object} defaults default http-proxy-middleware options
+ * @param {object} defaults prefix(default is '') and http-proxy-middleware options
  * @return {object}
  */
 proxy(services, defaults)

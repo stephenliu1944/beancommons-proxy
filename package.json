@@ -1,6 +1,6 @@
 {
   "name": "@beancommons/proxy",
-  "version": "0.2.3",
+  "version": "0.3.1",
   "description": "For dev environment http proxy config.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -100,9 +100,27 @@
   },
   "devServer": {
     "local": 8080,
-    "proxy": {
-      "http://mock.beancommons.com": "http://localhost:3001",
-      "http://api.beancommons.com": "http://api.beancommons.com"
-    }
+    "proxy": [
+      "http://192.168.1.99",
+      "http://192.168.1.88:7777",
+      "http://192.168.1.77:9999",
+      {
+        "http://a.beancommons.com": "http://localhost:3001",
+        "https://b.beancommons.com": "http://api.beancommons.com",
+        "http://c.beancommons.com/api": "http://api.beancommons.com",
+        "//d.beancommons.com": "http://api.beancommons.com",
+        "e.beancommons.com": "http://api.beancommons.com"
+      },
+      {
+        "http://192.168.1.1": "http://api.beancommons.com",
+        "https://192.168.1.2:8888": "http://api.beancommons.com",
+        "https://192.168.1.3:8888/api": "http://api.beancommons.com",      
+        "//192.168.1.4": "http://api.beancommons.com",
+        "//192.168.1.5:8888": "http://api.beancommons.com",
+        "192.168.1.6": "http://api.beancommons.com",
+        "192.168.1.7:8888": "http://api.beancommons.com",
+        "/api": "http://api.beancommons.com"
+      }
+   ]
   }
 }

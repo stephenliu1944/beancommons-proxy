@@ -7,7 +7,7 @@ npm install -D @beancommons/proxy
 ```
 
 ## Usage
-Proxy support three data types: String, Array or Object.  
+Proxy support format: String, Array or Object.  
 ### package.json
 ```js
 "dependencies": {
@@ -19,7 +19,7 @@ Proxy support three data types: String, Array or Object.
 // custom field, whatever you want
 "devEnvironments": {
     // String
-    "proxies": "http://api.xxx.com"     // url matching /api.xxxx.com to target http://api.xxx.com
+    "proxies": "http://api.xxx.com"                         // url matching /api.xxxx.com to target http://api.xxx.com
     // Object
     "proxies": {
         "/api": "http://api.xxx.com",                       // url matching /api to target http://api.xxx.com
@@ -61,35 +61,61 @@ const { local, proxies } = pkg.devEnvironments;
     devServer: {
         host: '0.0.0.0',
         port: local,
+        proxy: proxy(proxies)
+    }
+    ...
+}
+```
+
+matches paths starting with prefix
+```js
+{
+    devServer: {
+        host: '0.0.0.0',
+        port: local,
         proxy: proxy(proxies, {
-            prefix: 'api',     // prefix of proxy url, like matching /api/www.xxxx.com
-            secure: false      // http-proxy-middleware options
-            ...                // other http-proxy-middleware options
+            prefix: 'api'       // all proxies matching paths starting with /api
         })
     }
     ...
 }
 ```
 
-### app.js
-use @beancommons/http or other
+rewrite default options of http-proxy-middleware
 ```js
-import http, { helpers } from '@beancommons/http';
-http({
-    baseURL: 'http://api1.xxxx.com',
-    url: 'xxx',
-    proxyPath: helpers.proxyHost
+{
+    devServer: {
+        host: '0.0.0.0',
+        port: local,
+        proxy: proxy(proxies, {
+            logLevel: 'info',
+            secure: true,
+            ws: true
+            ...
+        })
+    }
     ...
-});
+}
+```
+
+default options
+```js
+{
+    logLevel: 'debug',
+    changeOrigin: true,
+    cookieDomainRewrite: '',
+    cookiePathRewrite: '/',
+    pathRewrite: (_path) => _path.replace(key, '')
+}
 ```
 
 ## API
 ```js
 /**
  * @desc create options of http-proxy-middleware
- * @param {string | array | object} services proxy config.
- * @param {object} defaults prefix(default is '') and http-proxy-middleware options
+ * @param {string | array | object} config proxy config.
+ * @param {object} options default options of http-proxy-middleware with prefix(default is '')
  * @return {object}
  */
-proxy(services, defaults)
+proxy(config, options)
 ```

@@ -1,7 +1,7 @@
 {
-  "name": "@beancommons/proxy",
-  "version": "0.3.2",
-  "description": "For dev environment http proxy config.",
+  "name": "http-proxy-settings",
+  "version": "0.1.1",
+  "description": "Easy to set proxy options for http-proxy-middleware.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "browser": "dist/index.umd.js",
@@ -20,7 +20,9 @@
     "proxy",
     "http",
     "cors",
-    "mock"
+    "mock",
+    "http-proxy-middleware",
+    "webpack"
   ],
   "files": [
     "dist",

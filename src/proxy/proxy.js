@@ -90,7 +90,7 @@ export function onProxyRes(proxyRes, req, res) {
     }
 }
 
-export function proxy(services, defaultOpts = {}) {
+export function settings(services, defaultOpts = {}) {
     var { prefix, ...other } = defaultOpts;
     var matchings = setPathsMatching(services, prefix);
     var options = setProxyOptions(matchings, other);

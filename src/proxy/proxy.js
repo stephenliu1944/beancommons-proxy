@@ -9,6 +9,7 @@ function proxyPath(baseURL, prefix) {
      * 修剪路径匹配
      * /api/ > /api
      * ynreport.bbdservice.net/ > /ynreport.bbdservice.net
+     * //d.beancommons.com > //d.beancommons.com (此处有bug, 不要这样写)
      * http://localhost:3001/ > /http://localhost:3001
      * /http://192.168.1.1:3001 > /http://192.168.1.1:3001
      * http://ynreport.bbdservice.net/abc/ > /http://ynreport.bbdservice.net/abc
@@ -60,6 +61,7 @@ function setProxyOptions(options = {}, defaults = {}) {
             proxyOptions[key] = {
                 logLevel: 'debug',
                 changeOrigin: true,
+                secure: false,
                 cookieDomainRewrite: '',
                 cookiePathRewrite: '/',
                 pathRewrite: (_path) => _path.replace(key, ''),

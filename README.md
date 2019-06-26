@@ -103,6 +103,7 @@ default options
 {
     logLevel: 'debug',
     changeOrigin: true,
+    secure: false,
     cookieDomainRewrite: '',
     cookiePathRewrite: '/',
     pathRewrite: (_path) => _path.replace(key, '')

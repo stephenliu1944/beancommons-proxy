@@ -1,9 +1,9 @@
-# http-proxy-settings
+# http-proxy-config
 Easy to set proxy options for http-proxy-middleware.
 
 ## Install
 ```
-npm install -D http-proxy-settings
+npm install -D http-proxy-config
 ```
 
 ## Usage
@@ -51,7 +51,7 @@ Proxy support format: String, Array or Object.
 
 ### webpack.config.dev.js  
 ```js
-import { settings } from 'http-proxy-settings';
+import { settings } from 'http-proxy-config';
 import pkg from './package.json';
 
 const { local, proxies } = pkg.devEnvironments;

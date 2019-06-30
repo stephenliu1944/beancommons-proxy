@@ -13,14 +13,15 @@ function proxyPath(baseURL, prefix) {
      * http://localhost:3001/ > /http://localhost:3001
      * /http://192.168.1.1:3001 > /http://192.168.1.1:3001
      * http://ynreport.bbdservice.net/abc/ > /http://ynreport.bbdservice.net/abc
+     * [/http://ynreport.bbdservice.net]/abc/ > [http://ynreport.bbdservice.net]/abc
      */ 
     // 去掉开头和末尾的 '/'
-    var matchingPath = baseURL.replace(/^\//, '').replace(/\/$/, '');
+    var matchingPath = baseURL.replace(/^(\[)?\//, '$1').replace(/\/$/, '');
 
     if (isNotBlank(prefix)) {
         matchingPath = `${prefix}/${matchingPath}`;
     }
-
+    // TODO: 头部不加 / 行不行, 加 /是因为 http.proxyHost() 头部加了 /
     return `/${matchingPath}`;
 }
 // 为服务设置匹配路径
@@ -56,22 +57,31 @@ function setProxyOptions(options = {}, defaults = {}) {
 
     for (let key in options) {
         if (options.hasOwnProperty(key)) {
-            let opt = options[key];
+            // 获取到 value 配置
+            let customOpt = options[key];
+            let pathMatching = key.replace('[', '').replace(']', '');
 
-            proxyOptions[key] = {
+            proxyOptions[pathMatching] = {
                 logLevel: 'debug',
                 changeOrigin: true,
                 secure: false,
                 cookieDomainRewrite: '',
                 cookiePathRewrite: '/',
-                pathRewrite: (_path) => _path.replace(key, ''),
+                pathRewrite: (requestPath) => {
+                    let replacement = key;
+                    // 将括号中的字符替换掉匹配的路径
+                    if (/\[(.+)\]/.test(key)) {
+                        replacement = RegExp.$1;
+                    }
+                    return requestPath.replace(replacement, '');
+                },
                 ...defaults
             };
 
-            if (isString(opt)) {
-                proxyOptions[key].target = opt;
-            } else if (isObject(opt)) {
-                Object.assign(proxyOptions[key], opt);
+            if (isString(customOpt)) {
+                proxyOptions[pathMatching].target = customOpt;
+            } else if (isObject(customOpt)) {
+                Object.assign(proxyOptions[pathMatching], customOpt);
             } else {
                 throw new Error('proxy options type error, only support string and object type');
             }

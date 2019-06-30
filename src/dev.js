@@ -5,7 +5,7 @@ import proxy, { settings } from './index';
 import pkg from '../package.json';
 
 console.log(proxy.settings(pkg.devServer.proxy, {
-    prefix: 'api',
-    secure: false
+    // prefix: 'api',
+    secure: true
 }));
 

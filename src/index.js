@@ -1,4 +1,8 @@
-import * as proxy from './proxy';
+import { settings } from './core';
+import * as helpers from './helpers';
 
-export * from './proxy';
-export default proxy;
+export {
+    settings,
+    helpers
+};
+export default settings;

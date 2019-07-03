@@ -55,20 +55,28 @@ function translateConfig(services) {
 
     return options;
 }
-
-function pathRewrite(key, target) {
+// 封装 pathRewrite 方法
+function pathRewriteWrapper(key, target, pathRewrite) {
     return function(path, req) {    // path 是请求的全路径
         let reqPath;
         if (key.includes('[')) {
             let pathMatching = key.replace(/[\[\]]/g, '');      // 清除括号, 拿到 http-proxy-middleware 匹配的字符串
-            let replacement = key.replace(/(\[[\w\:\&\+\%\=\.\/\?\-]*\])+?/g, '');      // 拿到移除[]内容后的字符串
+            let replacement = key.replace(/(\[[\w\:\&\+\%\=\.\/\?\-]*\])+?/g, '');              // 拿到移除[]内容后的字符串
             reqPath = path.replace(pathMatching, replacement).replace(/\/{2,}/, '/').trim();    // 找到匹配的字符串, 替换为标记, 
         } else {
             reqPath = path;
         }
-        /* eslint-disable */
-        console.log('[HPM] Request', target + reqPath);
-        /* eslint-enable */
+
+        if (pathRewrite) {
+            reqPath = pathRewrite(reqPath, req);
+        }
+        
+        setTimeout(() => {
+            /* eslint-disable */
+            console.log('[HPM] HTTP/'+ req.httpVersion, target + reqPath);
+            /* eslint-enable */
+        }, 0);
+
         return reqPath;
     };
 }
@@ -89,17 +97,20 @@ function setHttpProxyOptions(options = {}, defaults = {}) {
                 secure: false,
                 cookieDomainRewrite: '',
                 cookiePathRewrite: '/',
-                pathRewrite: pathRewrite(key, value.target || value || defaults.target),
                 ...defaults
+                // pathRewrite: pathRewrite(key, value.target || value || defaults.target),
             };
 
             if (isString(value)) {
-                proxyOptions[pathMatching].target = value;
+                proxyOptions[pathMatching].target = value.replace(/[\[\]]/g, '');
             } else if (isObject(value)) {
                 Object.assign(proxyOptions[pathMatching], value);
             } else {
                 throw new Error('proxy options type error, only support string and object type');
             }
+
+            // wrap pathRewrite
+            proxyOptions[pathMatching].pathRewrite = pathRewriteWrapper(key, proxyOptions[pathMatching].target, proxyOptions[pathMatching].pathRewrite);
         }
     }
 

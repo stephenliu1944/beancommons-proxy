@@ -36,10 +36,10 @@
     "lint:js": "eslint -c .eslintrc.prod.json --fix",
     "package": "cross-env BUILD_PATH=dist npm run build:prod",
     "package:watch": "cross-env BUILD_PATH=dist NODE_ENV=production rollup -w -c rollup.config.prod.js",
-    "publish:prerelease": "npm run package && gulp version-prerelease && npm publish --access=public && git:push",
-    "publish:patch": "npm run package && gulp version-patch && npm publish --access=public && git:push",
-    "publish:minor": "npm run package && gulp version-minor && npm publish --access=public && git:push",
-    "publish:major": "npm run package && gulp version-major && npm publish --access=public && git:push",
+    "publish:prerelease": "npm run package && gulp version-prerelease && npm publish --access=public",
+    "publish:patch": "npm run package && gulp version-patch && npm publish --access=public",
+    "publish:minor": "npm run package && gulp version-minor && npm publish --access=public",
+    "publish:major": "npm run package && gulp version-major && npm publish --access=public",
     "unpublish": "npm unpublish -f",
     "git:push": "gulp git-push"
   },
@@ -49,13 +49,15 @@
     }
   },
   "lint-staged": {
-    "src/**/*.js": [
-      "npm run lint:js",
-      "git add"
-    ],
-    "ignore": [
-      "src/dev.js"
-    ]
+    "linters": {
+      "src/**/*.js": [
+        "npm run lint:js",
+        "git add"
+      ],
+      "ignore": [
+        "src/dev.js"
+      ]
+    }
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",

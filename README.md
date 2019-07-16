@@ -47,10 +47,11 @@ Proxy support format: String, Array or Object.
     ],
     // use [] to remove content(content which is in [] will replace to '')
     "proxies": {
-        "[/proxy]": "http://api.xxx.com",                   // request '/proxy/json/210.75.225.254', matching '/proxy', to 'http://api.xxx.com/json/210.75.225.254'
-        "[/proxy]/api": "http://api.xxx.com",               // request '/proxy/api/210.75.225.254', matching '/proxy/api', to 'http://api.xxx.com/api/210.75.225.254'
-        "[http://api.xxx.com]": "http://api.xxx.com",       // request '/http://api.xxx.com/api/210.75.225.254', matching 'http://api.xxx.com', to http://api.xxx.com/api/210.75.225.254'
-        "[http://api.xxx.com]/api": "http://api.xxx.com"    // request '/http://api.xxx.com/api/210.75.225.254', matching 'http://api.xxx.com/api', to http://api.xxx.com/api/210.75.225.254'
+        "(/proxy)": "http://api1.xxx.com",                   // request '/proxy/json/210.75.225.254', matching '/proxy', to 'http://api1.xxx.com/json/210.75.225.254'
+        "(/proxy)/api": "http://api2.xxx.com",               // request '/proxy/api/210.75.225.254', matching '/proxy/api', to 'http://api2.xxx.com/api/210.75.225.254'
+        "(http://api.xxx.com)": "http://api3.xxx.com",       // request '/http://api.xxx.com/api/210.75.225.254', matching 'http://api.xxx.com', to http://api3.xxx.com/api/210.75.225.254'
+        "(http://api.xxx.com)/api": "http://api4.xxx.com"    // request '/http://api.xxx.com/api/210.75.225.254', matching 'http://api.xxx.com/api', to http://api4.xxx.com/api/210.75.225.254'
+        "(http://api.xxx.com)/api/user/1": "http://api5.xxx.com"    // request '/http://api.xxx.com/api/user/1', matching 'http://api.xxx.com/api/user/1', to http://api5.xxx.com/api/user/1
     }
 }
 ...

@@ -1,11 +1,11 @@
 {
   "name": "http-proxy-config",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Easy to set proxy options for http-proxy-middleware.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "browser": "dist/index.umd.js",
-  "libraryName": "Proxy",
+  "libraryName": "ProxyConfig",
   "license": "MIT",
   "author": "Stephen Liu",
   "repository": {
@@ -21,7 +21,8 @@
     "http",
     "mock",
     "http-proxy-middleware",
-    "webpack"
+    "webpack",
+    "webpack-dev-server"
   ],
   "files": [
     "dist",
@@ -117,9 +118,12 @@
         "(https://192.168.1.3:8888)/api": "http://api.beancommons.com",
         "(https://192.168.1.3:8888/)api": "http://api.beancommons.com",
         "//192.168.1.5:8888": "http://api.beancommons.com",
-        "192.168.1.6": "http://api.beancommons.com",
-        "192.168.1.7:8888": "http://api.beancommons.com",
-        "/api": "http://api.beancommons.com"
+        "/192.168.1.6": "http://api.beancommons.com",
+        "/192.168.1.7:8888": "http://api.beancommons.com",
+        "/api": {
+          "secure": false,
+          "target": "http://111111111111111111111111111111111111"
+        }
       }
     ]
   }

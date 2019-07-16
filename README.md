@@ -17,41 +17,42 @@ Proxy support format: String, Array or Object.
 ...
 },
 // key will transform to path matching, value will transform to target options
+// First match will be used. The order of the configuration matters.
 "devEnvironments": {
     // String
-    "proxies": "http://api.xxx.com",                        // matching 'http://api.xxx.com' to target 'http://api.xxx.com'
+    "proxies": "http://api.xxx.com",                        // matching 'http://api.xxx.com' proxy to 'http://api.xxx.com'
     // Object
     "proxies": {
-        "/api": "http://api.xxx.com",                       // matching '/api' to target 'http://api.xxx.com'
-        "http://api.xxx.com": "http://api.xxx.com",         // matching '/http://api.xxx.com' to target 'http://api.xxx.com'
-        "http://api.xxx.com/api": "http://api.xxx.com",     // matching '/http://api.xxx.com/api' to target 'http://api.xxx.com'
-        "http://192.168.1.1": "http://api.xxx.com",         // matching '/http://192.168.1.1' to target 'http://api.xxx.com'
-        "http://192.168.1.1:8080": "http://api.xxx.com",    // matching '/http://192.168.1.1:8080' to target 'http://api.xxx.com'
-        "http://api2.xxx.com": {                            // matching '/http://api2.xxx.com' to target 'http://localhost:3002 with more custom options
-            target: "http://localhost:3002"
+        "/api/users": "http://api3.xxx.com",                // matching '/api/users' proxy to 'http://api3.xxx.com'
+        "/api/user/1": "http://api2.xxx.com",               // matching '/api/user/1' proxy to 'http://api2.xxx.com'
+        "/api": "http://api1.xxx.com",                      // matching '/api' proxy to 'http://api1.xxx.com'
+        "/api/books": {                                     // matching '/api/books' to target 'http://localhost:3000
+            target: "http://localhost:3000"
             (http-proxy-middleware options)...
         }
     },
     // Array
     "proxies": [
-        "http://api1.xxxx.com",
+        "http://api1.xxxx.com",                             // matching 'http://api.xxx.com' proxy to 'http://api.xxx.com'
         {
-            "http://api2.xxxx.com": "http://192.168.1.1:3001",
-            "http://api3.xxxx.com": "http://192.168.1.1:3002"
-        }, {
-            "http://api4.xxx.com": {
-                target: "http://192.168.1.1:3003"
+            "/api/users": "http://api3.xxx.com",            // matching '/api/users' proxy to 'http://api3.xxx.com'
+            "/api/user/1": "http://api2.xxx.com",           // matching '/api/user/1' proxy to 'http://api2.xxx.com'
+            "/api": "http://api1.xxx.com"                   // matching '/api' proxy to 'http://api1.xxx.com'
+        },
+        {
+            "/api/books": {                                 // matching '/api/books' proxy to 'http://localhost:3000
+                target: "http://localhost:3000"
                 (http-proxy-middleware options)...
             }
         }
     ],
-    // use [] to remove content(content which is in [] will replace to '')
+    // use () to rewrite path(content which is in () will be rewritten to '')
     "proxies": {
-        "(/proxy)": "http://api1.xxx.com",                   // request '/proxy/json/210.75.225.254', matching '/proxy', to 'http://api1.xxx.com/json/210.75.225.254'
-        "(/proxy)/api": "http://api2.xxx.com",               // request '/proxy/api/210.75.225.254', matching '/proxy/api', to 'http://api2.xxx.com/api/210.75.225.254'
-        "(http://api.xxx.com)": "http://api3.xxx.com",       // request '/http://api.xxx.com/api/210.75.225.254', matching 'http://api.xxx.com', to http://api3.xxx.com/api/210.75.225.254'
-        "(http://api.xxx.com)/api": "http://api4.xxx.com"    // request '/http://api.xxx.com/api/210.75.225.254', matching 'http://api.xxx.com/api', to http://api4.xxx.com/api/210.75.225.254'
-        "(http://api.xxx.com)/api/user/1": "http://api5.xxx.com"    // request '/http://api.xxx.com/api/user/1', matching 'http://api.xxx.com/api/user/1', to http://api5.xxx.com/api/user/1
+        "(http://api.xxx.com)/api/user/1": "http://api5.xxx.com"    // request '/http://api.xxx.com/api/user/1', matching 'http://api.xxx.com/api/user/1', proxy to http://api5.xxx.com/api/user/1
+        "(http://api.xxx.com)/api/user/2": "http://api4.xxx.com"    // request '/http://api.xxx.com/api/user/2', matching 'http://api.xxx.com/api/user2', proxy to http://api4.xxx.com/api/user/2'
+        "(http://api.xxx.com)/api/users": "http://api3.xxx.com",     // request '/http://api.xxx.com/api/users', matching 'http://api.xxx.com/api/users', proxy to http://api3.xxx.com/api/users'
+        "(/proxy)/api": "http://api2.xxx.com",               // request '/proxy/api/210.75.225.254', matching '/proxy/api', proxy to 'http://api2.xxx.com/api/210.75.225.254'
+        "(/proxy)": "http://api1.xxx.com"                    // request '/proxy/json/210.75.225.254', matching '/proxy', proxy to 'http://api1.xxx.com/json/210.75.225.254'
     }
 }
 ...

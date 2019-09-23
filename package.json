@@ -1,6 +1,6 @@
 {
-  "name": "http-proxy-config",
-  "version": "0.1.5",
+  "name": "@middlend/proxy-config",
+  "version": "0.1.1",
   "description": "Easy to set proxy options for http-proxy-middleware.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",

@@ -1,58 +1,61 @@
-# @beancommons/proxy
-Easy to config webpack devServer proxy or http-proxy-middleware options.
+# @easytool/proxy-config
+Easy to set proxy for webpack-dev-server.
 
 ## Install
 ```
-npm install -D @beancommons/proxy
+npm install -D @easytool/proxy-config
 ```
 
 ## Usage
-Proxy support three data types: String, Array or Object.  
-package.json
+Proxy support format: String, Array or Object.  
+### package.json
 ```js
-"dependencies": {
-...
-},
-"devDependencies": {
-...
-},
-// custom field, whatever you want
-"devEnvironments": {              
+// key will transform to path matching, value will transform to target options
+// First match will be used. The order of the configuration matters.
+"devEnvironments": {
     // String
-    "proxies": "http://api1.xxxx.com"     // matching /proxy/api1.xxxx.com target http://api1.xxxx.com
-    // Array
-    "proxies": [
-        // matching /proxy/api1.xxxx.com target http://api1.xxxx.com
-        "http://api1.xxxx.com", 
-        // or                                       
-        {   // matching /proxy/api2.xxxx.com target http://localhost:3002
-            "http://api2.xxxx.com": "http://localhost:3002"   
-        },
-        // or        
-        {   // matching /proxy/api3.xxxx.com target http://localhost:3003 and more custom options
-            "http://api3.xxx.com": {                          
-                target: "http://localhost:3003"
-                (http-proxy-middleware options)...
-            }
-        }
-    ]
+    "proxies": "http://api.xxx.com",                        // matching 'http://api.xxx.com' proxy to 'http://api.xxx.com'
     // Object
     "proxies": {
-        // idem
-        "http://api1.xxx.com": "http://localhost:3001",  
-        // or     
-        // idem
-        "http://api2.xxx.com": {
-            target: "http://localhost:3002"
-            (http-proxy-middleware options)...
+        "/api/users": "http://api3.xxx.com",                // matching '/api/users' proxy to 'http://api3.xxx.com'
+        "/api/user/1": "http://api2.xxx.com",               // matching '/api/user/1' proxy to 'http://api2.xxx.com'
+        "/api": "http://api1.xxx.com",                      // matching '/api' proxy to 'http://api1.xxx.com'
+        "/api/books": {                                     // matching '/api/books' to target 'http://localhost:3000
+            target: "http://localhost:3000"
+            ...(other options)
         }
+    },
+    // Array
+    "proxies": [
+        "http://api1.xxxx.com",                             // matching 'http://api.xxx.com' proxy to 'http://api.xxx.com'
+        {
+            "/api/users": "http://api3.xxx.com",            // matching '/api/users' proxy to 'http://api3.xxx.com'
+            "/api/user/1": "http://api2.xxx.com",           // matching '/api/user/1' proxy to 'http://api2.xxx.com'
+            "/api": "http://api1.xxx.com"                   // matching '/api' proxy to 'http://api1.xxx.com'
+        },
+        {
+            "/api/books": {                                 // matching '/api/books' proxy to 'http://localhost:3000
+                target: "http://localhost:3000"
+                ...(other options)
+            }
+        }
+    ],
+    // use () to rewrite path(content which is in () will be rewritten to '')
+    "proxies": {
+        "(http://api.xxx.com)/api/user/1": "http://api5.xxx.com"    // request '/http://api.xxx.com/api/user/1', matching 'http://api.xxx.com/api/user/1', proxy to http://api5.xxx.com/api/user/1
+        "(http://api.xxx.com)/api/user/2": "http://api4.xxx.com"    // request '/http://api.xxx.com/api/user/2', matching 'http://api.xxx.com/api/user2', proxy to http://api4.xxx.com/api/user/2'
+        "(http://api.xxx.com)/api/users": "http://api3.xxx.com",     // request '/http://api.xxx.com/api/users', matching 'http://api.xxx.com/api/users', proxy to http://api3.xxx.com/api/users'
+        "(/proxy)/api": "http://api2.xxx.com",               // request '/proxy/api/210.75.225.254', matching '/proxy/api', proxy to 'http://api2.xxx.com/api/210.75.225.254'
+        "(/proxy)": "http://api1.xxx.com"                    // request '/proxy/json/210.75.225.254', matching '/proxy', proxy to 'http://api1.xxx.com/json/210.75.225.254'
     }
 }
 ...
 ```
-webpack.config.dev.js  
+
+### webpack.config.dev.js  
+setting options
 ```js
-import { proxy } from '@beancommons/proxy';
+import { settings } from '@easytool/proxy-config';
 import pkg from './package.json';
 
 const { local, proxies } = pkg.devEnvironments;
@@ -62,61 +65,53 @@ const { local, proxies } = pkg.devEnvironments;
         host: '0.0.0.0',
         port: local,
         proxy: {
-            ...proxy(proxies)
+            ...settings(proxies),
+            ...(other proxy)
         }
     }
     ...
 }
 ```
-app.js(optional)
+
+rewrite default options
 ```js
-/**
- * use @beancommons/http
- */ 
-import http, { proxyHost } from '@beancommons/http';
-http({
-    baseURL: 'http://api1.xxxx.com',
-    url: 'xxx',
-    proxyURL: proxyHost
-    ...
-}).then((data) => {
-
-}, (error) => {
-
-});
-```
-
-## Options
-webpack.config.dev.js  
-```js
-import { proxy } from '@beancommons/proxy';
-import pkg from './package.json';
-
-const { local, proxies } = pkg.devEnvironments;
-
 {
     devServer: {
         host: '0.0.0.0',
         port: local,
         proxy: {
-            ...proxy(proxies, {
-                prefix: 'api',     // prefix of proxy url, default is 'proxy'
-                secure: false       // http-proxy-middleware options
-                ...
-            })
+            ...settings(proxies, {
+                logLevel: 'info',
+                secure: true,
+                ws: true,
+                ...(other default options)
+            }),
+            ...(other proxy)
         }
     }
     ...
+}
+```
+
+default options
+```js
+{
+    logLevel: 'debug',
+    changeOrigin: true,
+    secure: false,
+    cookieDomainRewrite: '',
+    cookiePathRewrite: '/',
+    pathRewrite: pathRewriteWrapper  // pathRewriteWrapper will replace [xxx] to '' which is in path matching, like '[/proxy]' or '[/proxy]/api'
 }
 ```
 
 ## API
 ```js
 /**
- * @desc create options of http-proxy-middleware
- * @param {string | array | object} services proxy config.
- * @param {object} defaults default http-proxy-middleware options
+ * @desc create options for proxy
+ * @param {string | array | object} options proxy config.
+ * @param {object} default default options.
  * @return {object}
  */
-proxy(services, defaults)
+settings(options, default)
 ```

@@ -1,11 +1,11 @@
 {
-  "name": "@beancommons/proxy",
-  "version": "0.2.3",
-  "description": "For dev environment http proxy config.",
+  "name": "@easytool/proxy-config",
+  "version": "0.1.2",
+  "description": "Easy to set proxy for webpack-dev-server.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "browser": "dist/index.umd.js",
-  "libraryName": "Proxy",
+  "libraryName": "ProxyConfig",
   "license": "MIT",
   "author": "Stephen Liu",
   "repository": {
@@ -19,8 +19,10 @@
   "keywords": [
     "proxy",
     "http",
-    "cors",
-    "mock"
+    "mock",
+    "http-proxy-middleware",
+    "webpack",
+    "webpack-dev-server"
   ],
   "files": [
     "dist",
@@ -59,8 +61,7 @@
     ]
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
-    "@beancommons/utils": "^0.1.11"
+    "@babel/runtime": "^7.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.1",
@@ -100,9 +101,30 @@
   },
   "devServer": {
     "local": 8080,
-    "proxy": {
-      "http://mock.beancommons.com": "http://localhost:3001",
-      "http://api.beancommons.com": "http://api.beancommons.com"
-    }
+    "proxy": [
+      "http://192.168.1.99",
+      "http://192.168.1.88:7777",
+      "http://192.168.1.77:9999",
+      {
+        "http://a.beancommons.com": "http://localhost:3001",
+        "https://b.beancommons.com": "http://api.beancommons.com",
+        "http://c.beancommons.com/api": "http://api.beancommons.com",
+        "//d.beancommons.com": "http://api.beancommons.com",
+        "e.beancommons.com": "http://api.beancommons.com"
+      },
+      {
+        "(http://192.168.1.1)": "http://api.beancommons.com",
+        "https://192.168.1.2:8888": "http://api.beancommons.com",
+        "(https://192.168.1.3:8888)/api": "http://api.beancommons.com",
+        "(https://192.168.1.3:8888/)api": "http://api.beancommons.com",
+        "//192.168.1.5:8888": "http://api.beancommons.com",
+        "/192.168.1.6": "http://api.beancommons.com",
+        "/192.168.1.7:8888": "http://api.beancommons.com",
+        "/api": {
+          "secure": false,
+          "target": "http://111111111111111111111111111111111111"
+        }
+      }
+    ]
   }
 }

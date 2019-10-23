@@ -1,7 +1,7 @@
 {
-  "name": "@middlend/proxy-config",
-  "version": "0.1.1",
-  "description": "Easy to set proxy options for http-proxy-middleware.",
+  "name": "@easytool/proxy-config",
+  "version": "0.1.2",
+  "description": "Easy to set proxy for webpack-dev-server.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "browser": "dist/index.umd.js",

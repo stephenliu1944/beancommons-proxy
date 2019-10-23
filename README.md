@@ -1,21 +1,15 @@
-# @middlend/proxy-config
-Easy to set proxy options for http-proxy-middleware.
+# @easytool/proxy-config
+Easy to set proxy for webpack-dev-server.
 
 ## Install
 ```
-npm install -D @middlend/proxy-config
+npm install -D @easytool/proxy-config
 ```
 
 ## Usage
 Proxy support format: String, Array or Object.  
 ### package.json
 ```js
-"dependencies": {
-...
-},
-"devDependencies": {
-...
-},
 // key will transform to path matching, value will transform to target options
 // First match will be used. The order of the configuration matters.
 "devEnvironments": {
@@ -28,7 +22,7 @@ Proxy support format: String, Array or Object.
         "/api": "http://api1.xxx.com",                      // matching '/api' proxy to 'http://api1.xxx.com'
         "/api/books": {                                     // matching '/api/books' to target 'http://localhost:3000
             target: "http://localhost:3000"
-            (http-proxy-middleware options)...
+            ...(other options)
         }
     },
     // Array
@@ -42,7 +36,7 @@ Proxy support format: String, Array or Object.
         {
             "/api/books": {                                 // matching '/api/books' proxy to 'http://localhost:3000
                 target: "http://localhost:3000"
-                (http-proxy-middleware options)...
+                ...(other options)
             }
         }
     ],
@@ -61,7 +55,7 @@ Proxy support format: String, Array or Object.
 ### webpack.config.dev.js  
 setting options
 ```js
-import { settings } from '@middlend/proxy-config';
+import { settings } from '@easytool/proxy-config';
 import pkg from './package.json';
 
 const { local, proxies } = pkg.devEnvironments;
@@ -72,14 +66,14 @@ const { local, proxies } = pkg.devEnvironments;
         port: local,
         proxy: {
             ...settings(proxies),
-            ...other
+            ...(other proxy)
         }
     }
     ...
 }
 ```
 
-rewrite default options of http-proxy-middleware
+rewrite default options
 ```js
 {
     devServer: {
@@ -89,10 +83,10 @@ rewrite default options of http-proxy-middleware
             ...settings(proxies, {
                 logLevel: 'info',
                 secure: true,
-                ws: true
-                ...(http-proxy-middleware options)
+                ws: true,
+                ...(other default options)
             }),
-            ...other
+            ...(other proxy)
         }
     }
     ...
@@ -114,7 +108,7 @@ default options
 ## API
 ```js
 /**
- * @desc create options for http-proxy-middleware
+ * @desc create options for proxy
  * @param {string | array | object} options proxy config.
  * @param {object} default default options.
  * @return {object}
